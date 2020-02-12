@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">مُرسل التطبيقات</string>
+    <string name="error">فشل في عرض التطبقات</string>
+    <string name="selectToShare">اختر للمشاركة</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="sortAtoZ">ترتيب أبجدياً</string>
+    <string name="aboutApp">عن التطبيق</string>
+    <string name="aboutDev">عن المطور</string>
+    <string name="shareApp">شارك التطبيق</string>
+    <string name="moreApp">المزيد من التطبيقات</string>
+
+    <string name="flow">او قم بمتابعتنا على مواقع التواصل الأجتماعية</string>
+    <string name="dev_info">ماجد المقبلي ، مبرمج ومطور مواقع إلكترونية وتطبيقات أندرويد . للتواصل وأبداء الأراء والأقتراحات على الأرقام التالية :</string>
+    <string name="app_info">يقوم التطبيق بعرض جميع التطبيقات المنصبة على هاتفك ، مع إمكانية مشاركة التطبيقات بكل سرعة وسهولة او إلغاء التثبيت لأي من تطبيقاتك</string>
+    <string name="aboutapp">عن التطبيق</string>
+    <string name="version">الأصدار رقم ( %s )</string>
+    <string name="deleteApp">إلغاء التثبيت</string>
+    <string name="downloadApp">قم بتحميل مُرسل التطبيقات وأستمتع بمشاركة تطبيقاتك مع اصدقائك ، من قوقل بلاي على الرابط : %s</string>
+    <string name="errorToShare">فشل في مشاركة التطبيق</string>
+    <string name="thereIs">لديك ( %s ) من التطبيقات</string>
+    <string name="selectApp">Select To Share</string>
+
+</resources>

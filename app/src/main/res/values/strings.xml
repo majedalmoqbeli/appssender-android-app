@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Apps Sender</string>
+    <string name="error">Failed to view apps</string>
+    <string name="selectToShare">Choose to share</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="sortAtoZ">Sort A to Z</string>
+    <string name="aboutApp">About App</string>
+    <string name="aboutDev">About Developer</string>
+    <string name="shareApp">Share App</string>
+    <string name="moreApp">More Apps</string>
+
+
+    <string name="flow">Or follow us on Social Media</string>
+    <string name="dev_info">Majed Al-Moqbeli , Web and Android Developer , to communicate or show opinions and suggestions on the numbers :</string>
+    <string name="app_info">This app displays all apps installed on your phone , with possibility of sharing apps or uninstall , everything in easy.</string>
+    <string name="aboutapp">About App</string>
+    <string name="version">Version ( %s )</string>
+    <string name="deleteApp">Uninstall App</string>
+    <string name="downloadApp">Download the apps sender and enjoy sharing your apps with your friends, from Google Play on the link : %s</string>
+    <string name="errorToShare">Failed share app</string>
+    <string name="thereIs">You have ( %s ) of apps</string>
+    <string name="selectApp">Select To Share</string>
+
+</resources>
