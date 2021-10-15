@@ -8,16 +8,24 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.RequestConfiguration;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.material.navigation.NavigationView;
+
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,14 +42,15 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.majedalmoqbeli.appssender.R;
 import com.majedalmoqbeli.appssender.adapter.ShowAppAdapter;
+import com.majedalmoqbeli.appssender.constants.AdmobKey;
 import com.majedalmoqbeli.appssender.models.ApplicationData;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -57,80 +66,130 @@ public class MainActivity extends AppCompatActivity
     private InterstitialAd mInterstitialAd;
     private TextView numberOf;
     private AdView mAdView;
+    private Toolbar toolbar;
 
+    AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        initToolBar();
+        setUpDrawer();
+        getDate();
 
-        MobileAds.initialize(this, "ca-app-pub-1576857231249604~4606015804");
+        initializeAds();
 
-        AdView adView = new AdView(this);
+        // here is banner
+        setupBanner();
+
+        setupInterstitialAd();
+        
+    }
+
+    private void setupInterstitialAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(this, AdmobKey.INTERSTITIAL_ID, adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Log.i("AdsInterstitialAd=>", "onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.i("AdsInterstitialAd", loadAdError.getMessage());
+                        mInterstitialAd = null;
+                    }
+                });
+    }
+
+    private void initializeAds() {
+        List<String> testDeviceIds = Arrays.asList(AdmobKey.TEST_DEVICES);
+        RequestConfiguration configuration =
+                new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build();
+        MobileAds.setRequestConfiguration(configuration);
+
+        MobileAds.initialize(this);
+    }
+
+    private void setupBanner() {
+
+
+        adView = new AdView(this);
+
         adView.setAdSize(AdSize.BANNER);
-        adView.setAdUnitId("ca-app-pub-1576857231249604/3398065286");
+
+        adView.setAdUnitId(AdmobKey.BANNER_ID);
+
 
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
 
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-1576857231249604/3588447605");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+
+                Log.i("AdsBanner Loaded =>", "DONE");
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError adError) {
+                // Code to be executed when an ad request fails.
+                Log.i("AdsBanner ERROR =>", adError.toString());
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        });
+    }
 
 
+    private void getDate() {
         recyclerView = findViewById(R.id.recyclerView);
         numberOf = findViewById(R.id.numberOf);
 
         if (getAppData())
             setRecyclerView(appData);
+    }
 
+    private void initToolBar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+    }
 
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-                Log.i("Loaded", "Loaded");
-            }
-
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
-                Log.i("Failed", "" + errorCode);
-            }
-
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when the ad is displayed.
-            }
-
-            @Override
-            public void onAdClicked() {
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
-
-            @Override
-            public void onAdClosed() {
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
-            }
-        });
+    private void setUpDrawer() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     private void setRecyclerView(ArrayList<ApplicationData> data) {
@@ -138,7 +197,7 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.removeAllViews();
-        adapter = new ShowAppAdapter(this, data, mInterstitialAd);
+        adapter = new ShowAppAdapter(this, data);
         recyclerView.setAdapter(adapter);
         recyclerView.setSelected(true);
 
@@ -206,7 +265,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
@@ -214,13 +273,13 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.aboutApp:
-                if (mInterstitialAd.isLoaded())
-                    mInterstitialAd.show();
+                if (mInterstitialAd != null)
+                    mInterstitialAd.show(this);
                 getAlertAboutApp();
                 break;
             case R.id.aboutDev:
-                if (mInterstitialAd.isLoaded())
-                    mInterstitialAd.show();
+                if (mInterstitialAd != null)
+                    mInterstitialAd.show(this);
                 getAlertAboutDeveloper();
                 break;
             case R.id.shareApp:
@@ -378,20 +437,12 @@ public class MainActivity extends AppCompatActivity
 
     public String getApkSize(String packageName) {
         try {
-            long appSize = new File(getPackageManager().getApplicationInfo(packageName, 0).publicSourceDir).length();
+            long appSize = new
+                    File(getPackageManager().getApplicationInfo(packageName, 0).publicSourceDir).length();
             return String.valueOf(Formatter.formatShortFileSize(this, appSize));
         } catch (PackageManager.NameNotFoundException e) {
             return "0";
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        resolveInfo.clear();
-        if (getAppData())
-            setRecyclerView(appData);
-
     }
 
 

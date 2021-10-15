@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">مُرسل التطبيقات</string>
+    <string name="admob_app_id">ca-app-pub-1576857231249604~4606015804</string>
+
     <string name="error">فشل في عرض التطبقات</string>
     <string name="selectToShare">اختر للمشاركة</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Majad Al-Moqbeli/AndroidStudioProjects/AppsSender/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Majad Al-Moqbeli/AndroidStudioProjects/AppsSender/app/src/main/res/layout/app_bar_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Majad Al-Moqbeli/AndroidStudioProjects/AppsSender/app/src/main/res/layout/content_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Majad Al-Moqbeli/AndroidStudioProjects/AppsSender/app/src/main/res/layout/ticket_info_app.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Majad Al-Moqbeli/AndroidStudioProjects/AppsSender/app/src/main/res/menu/activity_main_drawer.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Majad Al-Moqbeli/AndroidStudioProjects/AppsSender/app/src/main/res/menu/main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Majad Al-Moqbeli/AndroidStudioProjects/AppsSender/app/src/main/res/xml/admob_app_id.xml" value="0.25416666666666665" />
+      </map>
+    </option>
+  </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
-    <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />
+    <option name="myDefaultNotNull" value="androidx.annotation.RecentlyNonNull" />
     <option name="myNullables">
       <value>
         <list size="15">

@@ -1,15 +1,18 @@
 package com.majedalmoqbeli.appssender.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.content.FileProvider;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.TooltipCompat;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.TooltipCompat;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +21,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.majedalmoqbeli.appssender.constants.AdmobKey;
 import com.majedalmoqbeli.appssender.models.ApplicationData;
 import com.majedalmoqbeli.appssender.R;
 
@@ -33,18 +40,20 @@ import java.util.Objects;
 public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHolder> {
     private final Context context;
     private final ArrayList<ApplicationData> appData;
-    private final InterstitialAd mInterstitialAd;
+    private InterstitialAd mInterstitialAd;
 
-    public ShowAppAdapter(Context context, ArrayList<ApplicationData> appData, InterstitialAd mInterstitialAd) {
+
+    public ShowAppAdapter(Context context, ArrayList<ApplicationData> appData) {
         this.context = context;
         this.appData = appData;
-        this.mInterstitialAd = mInterstitialAd;
 
+        setupInterstitialAd();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.template_app, parent, false));
 
     }
@@ -89,7 +98,7 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
         }
 
 
-        void bind(final ApplicationData data) {
+        void bind(ApplicationData data) {
             mItem = data;
             appIcon.setImageDrawable(data.getAppIcon());
             appName.setText(data.getAppName());
@@ -188,13 +197,12 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
         @Override
         public void onClick(View view) {
 
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                }
-                Intent intent = new Intent(Intent.ACTION_MAIN)
-                        .setClassName(mItem.getAppPackage(), mItem.getAppActivityName());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
+            if (mInterstitialAd != null)
+                mInterstitialAd.show((Activity) context);
+            Intent intent = new Intent(Intent.ACTION_MAIN)
+                    .setClassName(mItem.getAppPackage(), mItem.getAppActivityName());
+            // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
 
         }
 
@@ -202,6 +210,27 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
 
     }
 
+    private void setupInterstitialAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(context, AdmobKey.INTERSTITIAL_CLICK_ID, adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Log.i("AdsInterstitialAd=>", "onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.i("AdsInterstitialAd", loadAdError.getMessage());
+                        mInterstitialAd = null;
+                    }
+                });
+    }
 
 }
 
