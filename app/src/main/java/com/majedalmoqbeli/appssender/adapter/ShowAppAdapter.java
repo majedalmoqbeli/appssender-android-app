@@ -1,6 +1,5 @@
 package com.majedalmoqbeli.appssender.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -21,10 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.majedalmoqbeli.appssender.helper.AdmobHelper;
 import com.majedalmoqbeli.appssender.constants.AdmobKey;
 import com.majedalmoqbeli.appssender.models.ApplicationData;
 import com.majedalmoqbeli.appssender.R;
@@ -41,13 +38,17 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
     private final Context context;
     private final ArrayList<ApplicationData> appData;
     private InterstitialAd mInterstitialAd;
-
+    private AdmobHelper admobHelper;
 
     public ShowAppAdapter(Context context, ArrayList<ApplicationData> appData) {
         this.context = context;
         this.appData = appData;
+        setUpAds();
+    }
 
-        setupInterstitialAd();
+    private void setUpAds() {
+        admobHelper = new AdmobHelper(context);
+        admobHelper.setupInterstitialAd(AdmobKey.INTERSTITIAL_LIST_ID);
     }
 
     @NonNull
@@ -197,8 +198,7 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
         @Override
         public void onClick(View view) {
 
-            if (mInterstitialAd != null)
-                mInterstitialAd.show((Activity) context);
+            admobHelper.showInterstitialAd();
             Intent intent = new Intent(Intent.ACTION_MAIN)
                     .setClassName(mItem.getAppPackage(), mItem.getAppActivityName());
             // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -207,30 +207,8 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
         }
 
 
-
     }
 
-    private void setupInterstitialAd() {
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        InterstitialAd.load(context, AdmobKey.INTERSTITIAL_CLICK_ID, adRequest,
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                        // The mInterstitialAd reference will be null until
-                        // an ad is loaded.
-                        mInterstitialAd = interstitialAd;
-                        Log.i("AdsInterstitialAd=>", "onAdLoaded");
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        // Handle the error
-                        Log.i("AdsInterstitialAd", loadAdError.getMessage());
-                        mInterstitialAd = null;
-                    }
-                });
-    }
 
 }
 

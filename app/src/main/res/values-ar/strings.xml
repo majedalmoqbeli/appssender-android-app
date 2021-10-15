@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">مُرسل التطبيقات</string>
+
     <string name="admob_app_id">ca-app-pub-1576857231249604~4606015804</string>
+    <string name="BANNER_END_ID">ca-app-pub-1576857231249604/3398065286</string>
+    <string name="BANNER_TOP_ID">ca-app-pub-1576857231249604/5188844043</string>
 
     <string name="error">فشل في عرض التطبقات</string>
     <string name="selectToShare">اختر للمشاركة</string>
@@ -22,6 +25,7 @@
     <string name="downloadApp">قم بتحميل مُرسل التطبيقات وأستمتع بمشاركة تطبيقاتك مع اصدقائك ، من قوقل بلاي على الرابط : %s</string>
     <string name="errorToShare">فشل في مشاركة التطبيق</string>
     <string name="thereIs">لديك ( %s ) من التطبيقات</string>
-    <string name="selectApp">Select To Share</string>
+    <string name="selectApp">اختر للمشاركة</string>
+    <string name="search">بحث</string>
 
 </resources>

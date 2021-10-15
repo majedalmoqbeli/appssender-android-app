@@ -102,7 +102,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/social/ic_share_black_24dp.xml" />
+                                      <entry key="url" value="file:/D:/Android/Sdk/icons/material/materialicons/search/baseline_search_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -112,8 +112,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="cccccc" />
-                            <entry key="outputName" value="ic_share" />
+                            <entry key="color" value="262525" />
+                            <entry key="outputName" value="ic_search" />
                             <entry key="sourceFile" value="C:\Users\MajedAl-Moqbeli" />
                           </map>
                         </option>
