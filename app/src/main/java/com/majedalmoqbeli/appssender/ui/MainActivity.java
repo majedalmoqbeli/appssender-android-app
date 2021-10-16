@@ -1,4 +1,4 @@
-package com.majedalmoqbeli.appssender.activity;
+package com.majedalmoqbeli.appssender.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -20,8 +20,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
@@ -51,15 +49,12 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private RecyclerView recyclerView;
+
     private List<ResolveInfo> resolveInfo;
     private ArrayList<ApplicationData> appData;
     private ArrayList<ApplicationData> newAppData = new ArrayList<>();
     private ShowAppAdapter adapter;
 
-    private TextView numberOf;
-
-    private Toolbar toolbar;
 
     private ActivityMainBinding binding;
 
@@ -92,15 +87,15 @@ public class MainActivity extends AppCompatActivity
     private void initDrawer() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open,
+                this, drawer, binding.toolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
     }
 
     private void initToolBar() {
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        setSupportActionBar(binding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.app_name);
     }
 
@@ -116,8 +111,6 @@ public class MainActivity extends AppCompatActivity
 
 
     private void getDate() {
-        recyclerView = findViewById(R.id.recyclerView);
-        numberOf = findViewById(R.id.numberOf);
 
         if (getAppData())
             setRecyclerView(appData);
@@ -125,14 +118,13 @@ public class MainActivity extends AppCompatActivity
 
 
     private void setRecyclerView(ArrayList<ApplicationData> data) {
-        numberOf.setText(getString(R.string.thereIs, String.valueOf(data.size())));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.removeAllViews();
-        adapter = new ShowAppAdapter(this, data);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setSelected(true);
+        binding.btn.numberOf.setText(getString(R.string.thereIs, String.valueOf(data.size())));
+        binding.btn.recyclerView.removeAllViews();
+        binding.btn.recyclerView.setHasFixedSize(true);
+        binding.btn.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        adapter = new ShowAppAdapter(this, data);
+        binding.btn.recyclerView.setAdapter(adapter);
 
     }
 
@@ -290,7 +282,7 @@ public class MainActivity extends AppCompatActivity
     private void getAlertAboutDeveloper() {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
-        @SuppressLint("InflateParams") View myView = LayoutInflater.from(this).inflate(R.layout.about_developer, null);
+        @SuppressLint("InflateParams") View myView = LayoutInflater.from(this).inflate(R.layout.custom_developer, null);
         LinearLayout linearCall = myView.findViewById(R.id.linearCall);
         LinearLayout linearWhatsapp = myView.findViewById(R.id.linearWhatsapp);
         ImageView ImageFacebook = myView.findViewById(R.id.ImageFacebook);
@@ -335,7 +327,7 @@ public class MainActivity extends AppCompatActivity
     private void getAlertAboutApp() {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        @SuppressLint("InflateParams") View myView = LayoutInflater.from(this).inflate(R.layout.ticket_info_app, null);
+        @SuppressLint("InflateParams") View myView = LayoutInflater.from(this).inflate(R.layout.custom_about, null);
         TextView version = myView.findViewById(R.id.version);
 
         PackageInfo pinfo;

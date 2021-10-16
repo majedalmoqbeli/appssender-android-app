@@ -4,20 +4,18 @@ import android.graphics.drawable.Drawable;
 
 public class ApplicationData {
 
-    private String appName;
-    private String appPackage;
-    private String appSize;
-    private String appActivityName;
+    private String appName, appPackage, appSize, appActivityName;
+
     private Drawable appIcon;
 
     public ApplicationData(String appName, Drawable appIcon,
-                            String appPackage, String appActivityName,
+                           String appPackage, String appActivityName,
                            String appSize) {
         this.appName = appName;
         this.appIcon = appIcon;
         this.appPackage = appPackage;
         this.appActivityName = appActivityName;
-        this.appSize=appSize;
+        this.appSize = appSize;
     }
 
 

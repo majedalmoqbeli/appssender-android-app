@@ -55,7 +55,7 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.template_app, parent, false));
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_app, parent, false));
 
     }
 
