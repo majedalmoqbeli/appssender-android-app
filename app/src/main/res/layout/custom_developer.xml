@@ -15,8 +15,8 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_image_dev"
-            android:contentDescription="TODO" />
+            android:contentDescription="TODO"
+            android:src="@drawable/ic_image_dev" />
 
         <View
             android:layout_width="match_parent"
@@ -49,6 +49,7 @@
 
                 <LinearLayout
                     android:id="@+id/linearCall"
+                    style="@style/imageStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
@@ -60,8 +61,8 @@
                         android:layout_width="100dp"
                         android:layout_height="50dp"
                         android:layout_weight="1"
-                        android:src="@drawable/ic_call"
                         android:contentDescription="TODO"
+                        android:src="@drawable/ic_call"
                         tools:ignore="NestedWeights" />
 
                     <TextView
@@ -81,6 +82,7 @@
 
                 <LinearLayout
                     android:id="@+id/linearWhatsapp"
+                    style="@style/imageStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -92,8 +94,8 @@
                         android:layout_width="100dp"
                         android:layout_height="50dp"
                         android:layout_weight="1"
-                        android:src="@drawable/ic_whatsapp"
                         android:contentDescription="TODO"
+                        android:src="@drawable/ic_whatsapp"
                         tools:ignore="NestedWeights" />
 
                     <TextView
@@ -146,10 +148,11 @@
 
                     <ImageView
                         android:id="@+id/imageTwitter"
+                        style="@style/imageStyle"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/ic_twitter"
-                        android:contentDescription="TODO" />
+                        android:contentDescription="TODO"
+                        android:src="@drawable/ic_twitter" />
 
                     <View
                         android:layout_width="0.1dp"
@@ -158,10 +161,11 @@
 
                     <ImageView
                         android:id="@+id/ImageIns"
+                        style="@style/imageStyle"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/ic_ins"
-                        android:contentDescription="TODO" />
+                        android:contentDescription="TODO"
+                        android:src="@drawable/ic_ins" />
 
                     <View
                         android:layout_width="0.1dp"
@@ -170,10 +174,11 @@
 
                     <ImageView
                         android:id="@+id/ImageFacebook"
+                        style="@style/imageStyle"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/ic_facebook"
-                        android:contentDescription="TODO" />
+                        android:contentDescription="TODO"
+                        android:src="@drawable/ic_facebook" />
 
                     <View
                         android:layout_width="0.1dp"

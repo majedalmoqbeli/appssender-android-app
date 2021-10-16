@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         });
         ImageFacebook.setOnClickListener(view -> {
-            Uri uri = Uri.parse("https://fb.com/majedalmoqbeli"); // missing 'http://' will cause crashed
+            Uri uri = Uri.parse("https://fb.com/majedalmoqbeli0"); // missing 'http://' will cause crashed
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         });

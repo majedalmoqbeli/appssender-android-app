@@ -26,4 +26,28 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+
+    <style name="imageStyle">
+        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:padding">2dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:theme">@style/SelectableItemTheme</item>
+    </style>
+
+    <style name="SelectableItemTheme" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">@color/colorPrimaryClickImage</item>
+    </style>
+
+    <!-- this is for all CardView Style. -->
+    <style name="cardViewStyle">
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="cardCornerRadius">5dp</item>
+        <item name="elevation">2dp</item>
+    </style>
+    <!-- .. -->
+
 </resources>

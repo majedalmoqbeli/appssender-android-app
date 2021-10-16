@@ -18,8 +18,8 @@
 
 
     <string name="flow">Or follow us on Social Media</string>
-    <string name="dev_info">Majed Al-Moqbeli , Web and Android Developer , to communicate or show opinions and suggestions on the numbers :</string>
-    <string name="app_info">This app displays all apps installed on your phone , with possibility of sharing apps or uninstall , everything in easy.</string>
+    <string name="dev_info">Majed Al-Moqbeli Web and Mobile Developer, to communicate or show opinions and suggestions on the numbers :</string>
+    <string name="app_info">This app displays all apps installed on your phone with possibility of sharing apps or uninstall, everything in easy.</string>
     <string name="aboutapp">About App</string>
     <string name="version">Version ( %s )</string>
     <string name="deleteApp">Uninstall App</string>
