@@ -1,14 +1,19 @@
 package com.majedalmoqbeli.appssender.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.cardview.widget.CardView;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.TooltipCompat;
 
@@ -21,10 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.majedalmoqbeli.appssender.databinding.ItemAppBinding;
 import com.majedalmoqbeli.appssender.helper.AdmobHelper;
 import com.majedalmoqbeli.appssender.constants.AdmobKey;
 import com.majedalmoqbeli.appssender.models.ApplicationData;
 import com.majedalmoqbeli.appssender.R;
+import com.majedalmoqbeli.appssender.ui.application.ApplicationViewModel;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,12 +44,14 @@ import java.util.Objects;
 public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHolder> {
     private final Context context;
     private final ArrayList<ApplicationData> appData;
-    private InterstitialAd mInterstitialAd;
+    private final TextView number;
     private AdmobHelper admobHelper;
+    private int p;
 
-    public ShowAppAdapter(Context context, ArrayList<ApplicationData> appData) {
+    public ShowAppAdapter(Context context, ArrayList<ApplicationData> appData, TextView number) {
         this.context = context;
         this.appData = appData;
+        this.number = number;
         setUpAds();
     }
 
@@ -55,7 +64,11 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_app, parent, false));
+        return new ViewHolder(
+                DataBindingUtil.inflate(
+                        LayoutInflater.from(context),
+                        R.layout.item_app, parent, false));
+
 
     }
 
@@ -64,62 +77,87 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
         holder.bind(appData.get(position));
     }
 
+    public int getPosition() {
+        return p;
+    }
+
+
+    public void removeItem(int p) {
+
+        if (!isAppInstalled(appData.get(p).getAppPackage())) {
+            appData.remove(p);
+            notifyItemRemoved(p);
+            updateCount();
+        }
+    }
+
+
+    private boolean isAppInstalled(String packageName) {
+        PackageManager pm = context.getPackageManager();
+        boolean app_installed;
+        try {
+            pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            app_installed = false;
+        }
+        return app_installed;
+    }
+
+    private void updateCount() {
+        number.setText(context.getResources().getString(R.string.thereIs, String.valueOf(appData.size())));
+    }
+
     @Override
     public int getItemCount() {
         return appData.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        final ImageView appIcon;
-        final ImageView shareApp;
-        final ImageView deleteApp;
-        final TextView appName;
-        final TextView appPackage, appSize;
-        ApplicationData mItem;
-        CardView cardView;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        private final ItemAppBinding binding;
 
-        ViewHolder(View itemView) {
-            super(itemView);
-
-            appIcon = itemView.findViewById(R.id.appIcon);
-            shareApp = itemView.findViewById(R.id.shareApp);
-            deleteApp = itemView.findViewById(R.id.deleteApp);
-            appSize = itemView.findViewById(R.id.appSize);
-            cardView = itemView.findViewById(R.id.cardView);
-
-            TooltipCompat.setTooltipText(deleteApp, context.getString(R.string.deleteApp));
-            TooltipCompat.setTooltipText(shareApp, context.getString(R.string.shareApp));
-            appPackage = itemView.findViewById(R.id.appPackage);
-            appName = itemView.findViewById(R.id.appName);
+        public ViewHolder(@NonNull ItemAppBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
 
 
-            itemView.setOnClickListener(this);
+            TooltipCompat.setTooltipText(binding.deleteApp, context.getString(R.string.deleteApp));
+            TooltipCompat.setTooltipText(binding.shareApp, context.getString(R.string.shareApp));
 
 
         }
 
 
         void bind(ApplicationData data) {
-            mItem = data;
-            appIcon.setImageDrawable(data.getAppIcon());
-            appName.setText(data.getAppName());
-            appSize.setText(data.getAppSize());
-            appPackage.setText(data.getAppPackage());
-            deleteApp.setOnClickListener(view -> {
-                Uri packageUri = Uri.parse("package:" + data.getAppPackage());
-                Intent intent = new Intent(Intent.ACTION_DELETE, packageUri);
-                context.startActivity(intent);
-                removeItem(getAdapterPosition());
-            });
 
-            shareApp.setOnClickListener(view -> {
-                shareApplication();
-            });
+            binding.setAppData(data);
+            binding.executePendingBindings();
+
+            setOnClicked();
+
+            updateCount();
         }
 
+        private void setOnClicked() {
+            binding.deleteApp.setOnClickListener(view -> {
+                Uri packageUri = Uri.parse("package:" + appData.get(getBindingAdapterPosition()).getAppPackage());
+                Intent intent = new Intent(Intent.ACTION_DELETE, packageUri);
+                ((Activity) context).startActivityForResult(intent, 1);
+                p = getBindingAdapterPosition();
+            });
 
-        void removeItem(int p) {
-            notifyItemRemoved(p);
+            binding.shareApp.setOnClickListener(view -> {
+                shareApplication();
+            });
+
+            binding.openApp.setOnClickListener(view -> {
+                admobHelper.showInterstitialAd();
+                Intent intent = new Intent(Intent.ACTION_MAIN)
+                        .setClassName(appData.get(getBindingAdapterPosition()).getAppPackage(), appData.get(getBindingAdapterPosition()).getAppActivityName());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            });
+
         }
 
 
@@ -127,7 +165,7 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
 
             ApplicationInfo packageinfo = null;
             try {
-                packageinfo = context.getPackageManager().getApplicationInfo(mItem.getAppPackage(), 0);
+                packageinfo = context.getPackageManager().getApplicationInfo(appData.get(getBindingAdapterPosition()).getAppPackage(), 0);
             } catch (Exception e) {
                 Log.i("ErrorException", e.toString());
             }
@@ -152,7 +190,7 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
                         return;
 
                 //Get application's name and convert to lowercase
-                tempFile = new File(tempFile.getPath() + "/" + mItem.getAppName() + ".apk");
+                tempFile = new File(tempFile.getPath() + "/" + appData.get(getBindingAdapterPosition()).getAppName() + ".apk");
                 //If file doesn't exists create new
                 if (!tempFile.exists()) {
                     if (!tempFile.createNewFile()) {
@@ -191,18 +229,6 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
                 Toast.makeText(context, context.getResources().getString(R.string.errorToShare), Toast.LENGTH_SHORT).show();
                 Log.i("ExceptionShare", e.toString());
             }
-
-        }
-
-
-        @Override
-        public void onClick(View view) {
-
-            admobHelper.showInterstitialAd();
-            Intent intent = new Intent(Intent.ACTION_MAIN)
-                    .setClassName(mItem.getAppPackage(), mItem.getAppActivityName());
-            // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
 
         }
 

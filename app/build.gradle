@@ -2,11 +2,11 @@ plugins {
     id 'com.android.application'
 }
 android {
-    compileSdk 30
+    compileSdk 31
     defaultConfig {
         applicationId "com.majedalmoqbeli.appssender"
         minSdk 16
-        targetSdk 30
+        targetSdk 31
         versionCode 7
         versionName "1.1.1"
         multiDexEnabled true
@@ -39,6 +39,12 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.cardview:cardview:1.0.0'
+
+    // Admobe
     implementation 'com.google.android.gms:play-services-ads:20.4.0'
+
+    // view model
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
 
 }

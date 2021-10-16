@@ -1,11 +1,9 @@
-package com.majedalmoqbeli.appssender.ui;
+package com.majedalmoqbeli.appssender.ui.application;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -19,9 +17,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,26 +38,21 @@ import com.majedalmoqbeli.appssender.constants.AdmobKey;
 import com.majedalmoqbeli.appssender.databinding.ActivityMainBinding;
 import com.majedalmoqbeli.appssender.models.ApplicationData;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 
 
-public class MainActivity extends AppCompatActivity
+public class ApplicationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private List<ResolveInfo> resolveInfo;
-    private ArrayList<ApplicationData> appData;
-    private ArrayList<ApplicationData> newAppData = new ArrayList<>();
+
     private ShowAppAdapter adapter;
 
 
     private ActivityMainBinding binding;
 
     private AdmobHelper admobHelper;
+    private ApplicationViewModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +64,13 @@ public class MainActivity extends AppCompatActivity
         initNavigationView();
 
 
-        getDate();
+        initViewModel();
 
+    }
 
+    private void initViewModel() {
+        model = new ViewModelProvider(this).get(ApplicationViewModel.class);
+        model.getData(this).observe(this, this::setRecyclerView);
     }
 
     private void setUpAds() {
@@ -110,20 +108,12 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void getDate() {
-
-        if (getAppData())
-            setRecyclerView(appData);
-    }
-
-
     private void setRecyclerView(ArrayList<ApplicationData> data) {
-        binding.btn.numberOf.setText(getString(R.string.thereIs, String.valueOf(data.size())));
+
         binding.btn.recyclerView.removeAllViews();
         binding.btn.recyclerView.setHasFixedSize(true);
         binding.btn.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        adapter = new ShowAppAdapter(this, data);
+        adapter = new ShowAppAdapter(this, data, binding.btn.numberOf);
         binding.btn.recyclerView.setAdapter(adapter);
 
     }
@@ -148,25 +138,23 @@ public class MainActivity extends AppCompatActivity
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (query != null) {
-                    if (!query.isEmpty()) getListBySearch(query);
-                    if (query.isEmpty()) getListBySearch("null");
-                }
+
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText != null) {
-                    if (newText.length() >= 1) getListBySearch(newText);
-                    if (newText.isEmpty()) getListBySearch("null");
+                    if (newText.length() >= 1) setRecyclerView(model.getListBySearch(newText));
+                    ;
+                    if (newText.isEmpty()) setRecyclerView(model.getListBySearch("null"));
                 }
                 return false;
             }
         });
 
         searchView.setOnCloseListener(() -> {
-            getListBySearch("%");
+            setRecyclerView(model.getListBySearch("%"));
             return false;
         });
 
@@ -179,7 +167,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.sortAtoZ) {
-            getListSortAtoZ();
+            setRecyclerView(model.getListSortAtoZ());
         }
 
         return super.onOptionsItemSelected(item);
@@ -204,61 +192,10 @@ public class MainActivity extends AppCompatActivity
             admobHelper.showInterstitialAd();
             moreApp();
         }
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
-
-    private void getListBySearch(String query) {
-        newAppData.clear();
-        for (ApplicationData item : appData) {
-            if ((item.getAppName().toLowerCase()).matches("(.*)" + query.toLowerCase() + "(.*)")
-            )
-                newAppData.add(item);
-
-        }
-        if (newAppData.size() > 0) setRecyclerView(newAppData);
-        else setRecyclerView(appData);
-    }
-
-    private void getListSortAtoZ() {
-        Comparator<ApplicationData> comparatorByName =
-                (ApplicationData o1, ApplicationData o2) ->
-                        o1.getAppName().compareTo(o2.getAppName());
-
-        Collections.sort(appData, comparatorByName);
-
-        setRecyclerView(appData);
-    }
-
-    private boolean getAppData() {
-        PackageManager pm = getPackageManager();
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        resolveInfo = pm.queryIntentActivities(intent, 0);
-        if (resolveInfo.size() > 0) {
-            setAppData();
-            return true;
-        } else {
-            Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-    }
-
-    private void setAppData() {
-        PackageManager pm = getPackageManager();
-
-        appData = new ArrayList<>();
-        for (int i = 0; i < resolveInfo.size(); i++) {
-            ActivityInfo aInfo = resolveInfo.get(i).activityInfo;
-            appData.add(new ApplicationData(resolveInfo.get(i).loadLabel(pm).toString()
-                    , resolveInfo.get(i).loadIcon(pm),
-                    aInfo.applicationInfo.packageName,
-                    aInfo.name,
-                    getApkSize(aInfo.applicationInfo.packageName)));
-        }
-    }
 
     private void shareApp() {
         Intent waIntent = new Intent(Intent.ACTION_SEND);
@@ -281,7 +218,7 @@ public class MainActivity extends AppCompatActivity
 
     private void getAlertAboutDeveloper() {
 
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ApplicationActivity.this);
         @SuppressLint("InflateParams") View myView = LayoutInflater.from(this).inflate(R.layout.custom_developer, null);
         LinearLayout linearCall = myView.findViewById(R.id.linearCall);
         LinearLayout linearWhatsapp = myView.findViewById(R.id.linearWhatsapp);
@@ -350,15 +287,17 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public String getApkSize(String packageName) {
-        try {
-            long appSize = new
-                    File(getPackageManager().getApplicationInfo(packageName, 0).publicSourceDir).length();
-            return String.valueOf(Formatter.formatShortFileSize(this, appSize));
-        } catch (PackageManager.NameNotFoundException e) {
-            return "0";
-        }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        adapter.removeItem(adapter.getPosition());
+
     }
+
+
+
 
 
 }

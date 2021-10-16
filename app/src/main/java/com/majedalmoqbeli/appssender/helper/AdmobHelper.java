@@ -22,7 +22,7 @@ import java.util.List;
 public class AdmobHelper {
 
 
-    private Context context;
+    private final Context context;
 
 
     public AdmobHelper(Context context) {
