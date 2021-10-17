@@ -73,6 +73,17 @@ public class ApplicationViewModel extends ViewModel {
     }
 
 
+    public void deleteItem(int index) {
+
+        if (applicationDataMutableLiveData.getValue() != null) {
+
+            applicationDataMutableLiveData.getValue().remove(index);
+
+        }
+
+    }
+
+
     private void getAppData(Context context) {
         pm = context.getPackageManager();
         Intent intent = new Intent(Intent.ACTION_MAIN);

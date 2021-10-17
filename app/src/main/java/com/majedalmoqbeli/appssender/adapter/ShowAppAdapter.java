@@ -47,11 +47,14 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
     private final TextView number;
     private AdmobHelper admobHelper;
     private int p;
+    private ApplicationViewModel model;
 
-    public ShowAppAdapter(Context context, ArrayList<ApplicationData> appData, TextView number) {
+    public ShowAppAdapter(Context context, ArrayList<ApplicationData> appData, TextView number,
+                          ApplicationViewModel model) {
         this.context = context;
         this.appData = appData;
         this.number = number;
+        this.model = model;
         setUpAds();
     }
 
@@ -85,7 +88,7 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
     public void removeItem(int p) {
 
         if (!isAppInstalled(appData.get(p).getAppPackage())) {
-            appData.remove(p);
+            model.deleteItem(p);
             notifyItemRemoved(p);
             updateCount();
         }

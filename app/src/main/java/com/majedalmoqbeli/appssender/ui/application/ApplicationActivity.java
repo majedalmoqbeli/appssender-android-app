@@ -116,7 +116,7 @@ public class ApplicationActivity extends AppCompatActivity
 
     private void setRecyclerView(ArrayList<ApplicationData> data) {
 
-        adapter = new ShowAppAdapter(this, data, binding.btn.numberOf);
+        adapter = new ShowAppAdapter(this, data, binding.btn.numberOf, model);
         binding.btn.recyclerView.setAdapter(adapter);
 
     }
