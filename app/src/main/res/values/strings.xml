@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Apps Sender</string>
+    <string name="admob_app_id">ca-app-pub-1576857231249604~4606015804</string>
+
+    <string name="BANNER_END_ID">ca-app-pub-1576857231249604/3398065286</string>
+    <string name="BANNER_TOP_ID">ca-app-pub-1576857231249604/5188844043</string>
+
     <string name="error">Failed to view apps</string>
     <string name="selectToShare">Choose to share</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -13,8 +18,8 @@
 
 
     <string name="flow">Or follow us on Social Media</string>
-    <string name="dev_info">Majed Al-Moqbeli , Web and Android Developer , to communicate or show opinions and suggestions on the numbers :</string>
-    <string name="app_info">This app displays all apps installed on your phone , with possibility of sharing apps or uninstall , everything in easy.</string>
+    <string name="dev_info">Majed Al-Moqbeli Web and Mobile Developer, to communicate or show opinions and suggestions on the numbers :</string>
+    <string name="app_info">This app displays all apps installed on your phone with possibility of sharing apps or uninstall, everything in easy.</string>
     <string name="aboutapp">About App</string>
     <string name="version">Version ( %s )</string>
     <string name="deleteApp">Uninstall App</string>
@@ -22,5 +27,7 @@
     <string name="errorToShare">Failed share app</string>
     <string name="thereIs">You have ( %s ) of apps</string>
     <string name="selectApp">Select To Share</string>
+    <string name="search">search</string>
+
 
 </resources>
