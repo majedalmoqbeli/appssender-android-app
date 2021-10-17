@@ -47,7 +47,7 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
     private final TextView number;
     private AdmobHelper admobHelper;
     private int p;
-    private ApplicationViewModel model;
+    private  ApplicationViewModel model;
 
     public ShowAppAdapter(Context context, ArrayList<ApplicationData> appData, TextView number,
                           ApplicationViewModel model) {
@@ -84,7 +84,6 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
         return p;
     }
 
-
     public void removeItem(int p) {
 
         if (!isAppInstalled(appData.get(p).getAppPackage())) {
@@ -93,8 +92,7 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
             updateCount();
         }
     }
-
-
+    
     private boolean isAppInstalled(String packageName) {
         PackageManager pm = context.getPackageManager();
         boolean app_installed;
