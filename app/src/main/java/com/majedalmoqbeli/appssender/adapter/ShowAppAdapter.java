@@ -141,12 +141,13 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
         private void setOnClicked() {
             binding.deleteApp.setOnClickListener(view -> {
                 Uri packageUri = Uri.parse("package:" + appData.get(getBindingAdapterPosition()).getAppPackage());
-                Intent intent = new Intent(Intent.ACTION_DELETE, packageUri);
+                Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, packageUri);
                 ((Activity) context).startActivityForResult(intent, 1);
                 p = getBindingAdapterPosition();
             });
 
             binding.shareApp.setOnClickListener(view -> {
+
                 shareApplication();
             });
 
