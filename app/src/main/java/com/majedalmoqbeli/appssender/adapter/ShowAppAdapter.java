@@ -92,7 +92,7 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
             updateCount();
         }
     }
-    
+
     private boolean isAppInstalled(String packageName) {
         PackageManager pm = context.getPackageManager();
         boolean app_installed;
