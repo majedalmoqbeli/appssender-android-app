@@ -40,8 +40,6 @@ public class ApplicationViewModel extends ViewModel {
     }
 
 
-
-
     public ArrayList<ApplicationData> getListBySearch(String query) {
         ArrayList<ApplicationData> newAppData = new ArrayList<>();
         if (applicationDataMutableLiveData.getValue() != null) {
@@ -49,7 +47,6 @@ public class ApplicationViewModel extends ViewModel {
                 if ((item.getAppName().toLowerCase()).matches("(.*)" + query.toLowerCase() + "(.*)")
                 )
                     newAppData.add(item);
-
             }
             if (newAppData.size() > 0) return newAppData;
         }
@@ -59,7 +56,7 @@ public class ApplicationViewModel extends ViewModel {
     }
 
 
-    public ArrayList<ApplicationData> getListSortAtoZ() {
+    public void getListSortAtoZ() {
 
         if (applicationDataMutableLiveData.getValue() != null) {
 
@@ -69,9 +66,9 @@ public class ApplicationViewModel extends ViewModel {
 
             Collections.sort(applicationDataMutableLiveData.getValue(), comparatorByName);
 
-            return applicationDataMutableLiveData.getValue();
+            applicationDataMutableLiveData.setValue(applicationDataMutableLiveData.getValue());
+
         }
-        return applicationDataMutableLiveData.getValue();
 
     }
 

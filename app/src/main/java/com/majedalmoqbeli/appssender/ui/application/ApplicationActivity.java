@@ -3,7 +3,6 @@ package com.majedalmoqbeli.appssender.ui.application;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,7 +16,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -29,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.majedalmoqbeli.appssender.R;
 import com.majedalmoqbeli.appssender.adapter.ShowAppAdapter;
@@ -58,8 +55,9 @@ public class ApplicationActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        setUpAds();
+        setupAds();
         initToolBar();
+        initRecyclerView();
         initDrawer();
         initNavigationView();
 
@@ -68,12 +66,24 @@ public class ApplicationActivity extends AppCompatActivity
 
     }
 
-    private void initViewModel() {
-        model = new ViewModelProvider(this).get(ApplicationViewModel.class);
-        model.getData(this).observe(this, this::setRecyclerView);
+    private void initRecyclerView() {
+        binding.btn.recyclerView.removeAllViews();
+        binding.btn.recyclerView.setHasFixedSize(true);
+        binding.btn.recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void setUpAds() {
+    private void initViewModel() {
+        model = new ViewModelProvider(this).get(ApplicationViewModel.class);
+        model.getData(this).observe(this, data -> {
+            if (adapter == null) {
+                setRecyclerView(data);
+            } else {
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void setupAds() {
         admobHelper = new AdmobHelper(this);
         admobHelper.initializeAds();
         admobHelper.setupBanner(binding.btn.adView);
@@ -92,27 +102,20 @@ public class ApplicationActivity extends AppCompatActivity
     }
 
     private void initToolBar() {
-
         setSupportActionBar(binding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.app_name);
     }
 
     private void initNavigationView() {
 
-
         binding.navigationView.setNavigationItemSelectedListener(this);
-
         binding.navigationView.inflateMenu(R.menu.activity_main_drawer);
-
 
     }
 
 
     private void setRecyclerView(ArrayList<ApplicationData> data) {
 
-        binding.btn.recyclerView.removeAllViews();
-        binding.btn.recyclerView.setHasFixedSize(true);
-        binding.btn.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ShowAppAdapter(this, data, binding.btn.numberOf);
         binding.btn.recyclerView.setAdapter(adapter);
 
@@ -167,7 +170,7 @@ public class ApplicationActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.sortAtoZ) {
-            setRecyclerView(model.getListSortAtoZ());
+            model.getListSortAtoZ();
         }
 
         return super.onOptionsItemSelected(item);
@@ -295,9 +298,6 @@ public class ApplicationActivity extends AppCompatActivity
         adapter.removeItem(adapter.getPosition());
 
     }
-
-
-
 
 
 }

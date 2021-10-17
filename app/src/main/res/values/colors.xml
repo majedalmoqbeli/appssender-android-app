@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#e60007</color>
-    <color name="colorSelect">#D520B832</color>
     <color name="colorPrimaryDark">#ec292d</color>
     <color name="colorPrimaryClickImage">#E2FF8B8E</color>
     <color name="colorAccent">#262b36</color>
+    <color name="colorAccentGary">#89898B</color>
     <color name="color_ff">#fff</color>
     <color name="color_gary">#E6E2E2</color>
 </resources>

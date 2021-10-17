@@ -35,6 +35,7 @@
                     android:layout_height="70dp"
                     android:layout_gravity="center"
                     android:layout_margin="2dp"
+                    android:padding="2dp"
                     android:contentDescription="TODO"
                     android:src="@{appData.appIcon}" />
 
@@ -45,7 +46,7 @@
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -53,10 +54,7 @@
                         android:id="@+id/appName"
                         style="@style/textView"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="2"
-                        android:gravity="center_vertical"
+                        android:layout_height="wrap_content"
                         android:text="@{appData.appName}"
                         app:autoSizeMinTextSize="1sp"
                         app:autoSizeStepGranularity="1sp"
@@ -70,14 +68,10 @@
 
                     <TextView
                         android:id="@+id/appSize"
-                        style="@style/textView"
+                        style="@style/textViewGray"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="@{appData.appSize}"
-                        android:textSize="10sp" />
+                        android:layout_height="wrap_content"
+                        android:text="@{appData.appSize}" />
 
                     <View
                         android:layout_width="match_parent"
@@ -86,14 +80,10 @@
 
                     <TextView
                         android:id="@+id/appPackage"
-                        style="@style/textView"
+                        style="@style/textViewGray"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="@{appData.appName}"
-                        android:textSize="10sp" />
+                        android:layout_height="wrap_content"
+                        android:text="@{appData.appPackage}" />
 
                 </LinearLayout>
 
