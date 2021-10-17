@@ -14,6 +14,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.majedalmoqbeli.appssender.R;
+import com.majedalmoqbeli.appssender.helper.GetAppsHelper;
 import com.majedalmoqbeli.appssender.models.ApplicationData;
 
 import java.io.File;
@@ -28,13 +29,15 @@ public class ApplicationViewModel extends ViewModel {
     private MutableLiveData<ArrayList<ApplicationData>> applicationDataMutableLiveData;
 
 
-    private PackageManager pm;
-
-
     public LiveData<ArrayList<ApplicationData>> getData(Context context) {
         if (applicationDataMutableLiveData == null) {
             applicationDataMutableLiveData = new MutableLiveData<>();
-            getAppData(context);
+            GetAppsHelper appsHelper = new GetAppsHelper(context);
+            if (appsHelper.getAppData() != null) {
+                applicationDataMutableLiveData.setValue(appsHelper.getAppData());
+            } else {
+                Toast.makeText(context, context.getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+            }
         }
         return applicationDataMutableLiveData;
     }
@@ -81,44 +84,6 @@ public class ApplicationViewModel extends ViewModel {
 
         }
 
-    }
-
-
-    private void getAppData(Context context) {
-        pm = context.getPackageManager();
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        List<ResolveInfo> resolveInfo = pm.queryIntentActivities(intent, 0);
-        if (resolveInfo.size() > 0) {
-            setAppData(resolveInfo, context);
-        } else {
-            Toast.makeText(context, context.getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    private void setAppData(List<ResolveInfo> resolveInfo, Context context) {
-
-        ArrayList<ApplicationData> appData = new ArrayList<>();
-        for (int i = 0; i < resolveInfo.size(); i++) {
-            ActivityInfo aInfo = resolveInfo.get(i).activityInfo;
-            appData.add(new ApplicationData(resolveInfo.get(i).loadLabel(pm).toString()
-                    , resolveInfo.get(i).loadIcon(pm),
-                    aInfo.applicationInfo.packageName,
-                    aInfo.name,
-                    getApkSize(aInfo.applicationInfo.packageName, context)));
-        }
-        applicationDataMutableLiveData.setValue(appData);
-    }
-
-    private String getApkSize(String packageName, Context context) {
-        try {
-            long appSize = new
-                    File(pm.getApplicationInfo(packageName, 0).publicSourceDir).length();
-            return String.valueOf(Formatter.formatShortFileSize(context, appSize));
-        } catch (PackageManager.NameNotFoundException e) {
-            return "0";
-        }
     }
 
 
