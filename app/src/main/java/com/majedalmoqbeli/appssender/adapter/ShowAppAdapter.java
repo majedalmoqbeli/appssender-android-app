@@ -158,76 +158,55 @@ public class ShowAppAdapter extends RecyclerView.Adapter<ShowAppAdapter.ViewHold
 
 
         private void shareApplication() {
-
-            ApplicationInfo packageinfo = null;
             try {
-                packageinfo = context.getPackageManager().getApplicationInfo(appData.get(getBindingAdapterPosition()).getAppPackage(), 0);
-            } catch (Exception e) {
-                Log.i("ErrorException", e.toString());
-            }
-            File filePath = new File(Objects.requireNonNull(packageinfo).publicSourceDir);
+                // Get application info
+                String packageName = appData.get(getBindingAdapterPosition()).getAppPackage();
+                ApplicationInfo packageInfo = context.getPackageManager().getApplicationInfo(packageName, 0);
+                File originalApk = new File(packageInfo.publicSourceDir);
 
-            Intent intent = new Intent(Intent.ACTION_SEND);
+                // Use app-specific cache directory (no permissions needed)
+                File cacheDir = new File(context.getCacheDir(), "ExtractedApk");
+                if (!cacheDir.exists() && !cacheDir.mkdirs()) {
+                    Toast.makeText(context, "Failed to create directory", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-            // MIME of .apk is "application/vnd.android.package-archive".
-            // but Bluetooth does not accept this. Let's use "*/*" instead.
-            intent.setType("application/vnd.android.package-archive");
+                // Prepare destination file
+                String appName = appData.get(getBindingAdapterPosition()).getAppName();
+                File tempFile = new File(cacheDir, appName + ".apk");
 
-            // Append file and send Intent
-            File originalApk = new File(String.valueOf(filePath));
-
-
-            try {
-                //Make new directory in new location
-                File tempFile = new File(context.getExternalCacheDir() + "/ExtractedApk");
-                //If directory doesn't exists create new
-                if (!tempFile.isDirectory())
-                    if (!tempFile.mkdirs())
-                        return;
-
-                //Get application's name and convert to lowercase
-                tempFile = new File(tempFile.getPath() + "/" + appData.get(getBindingAdapterPosition()).getAppName() + ".apk");
-                //If file doesn't exists create new
-                if (!tempFile.exists()) {
-                    if (!tempFile.createNewFile()) {
-                        return;
+                // Copy the APK file efficiently
+                try (InputStream in = new FileInputStream(originalApk);
+                     OutputStream out = new FileOutputStream(tempFile)) {
+                    byte[] buffer = new byte[8192];
+                    int length;
+                    while ((length = in.read(buffer)) > 0) {
+                        out.write(buffer, 0, length);
                     }
                 }
-                //Copy file to new location
-                InputStream in = new FileInputStream(originalApk);
-                OutputStream out = new FileOutputStream(tempFile);
 
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                in.close();
-                out.close();
-                System.out.println("File copied.");
-                //Open share dialog
+                // Share the APK using FileProvider
+                Uri fileUri = FileProvider.getUriForFile(
+                        context,
+                        context.getPackageName() + ".provider",
+                        tempFile
+                );
 
-                Uri myUri;
-                if (Build.VERSION.SDK_INT >= 24) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("application/vnd.android.package-archive");
+                intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                    myUri = FileProvider.getUriForFile(context.getApplicationContext(),
-                            context.getPackageName() + ".provider", tempFile);
+                context.startActivity(Intent.createChooser(
+                        intent,
+                        context.getResources().getString(R.string.selectToShare)
+                ));
 
-
-                } else
-                    myUri = Uri.fromFile(tempFile);
-                intent.putExtra(Intent.EXTRA_STREAM, myUri);
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                context.startActivity(Intent.createChooser(intent, context.getResources().getString(R.string.selectToShare)));
             } catch (Exception e) {
                 Toast.makeText(context, context.getResources().getString(R.string.errorToShare), Toast.LENGTH_SHORT).show();
-                Log.i("ExceptionShare", e.toString());
+                Log.e("AppShare", "Error sharing app", e);
             }
-
         }
-
 
     }
 
