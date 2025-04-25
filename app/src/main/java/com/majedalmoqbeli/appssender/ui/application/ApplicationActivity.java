@@ -39,8 +39,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 
-public class ApplicationActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class ApplicationActivity extends AppCompatActivity {
 
 
     private ShowAppAdapter adapter;
@@ -108,7 +107,29 @@ public class ApplicationActivity extends AppCompatActivity
 
     private void initNavigationView() {
 
-        binding.navigationView.setNavigationItemSelectedListener(this);
+        binding.navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                int id = item.getItemId();
+
+                if (id == R.id.aboutApp) {
+                    admobHelper.showInterstitialAd();
+                    getAlertAboutApp();
+                } else if (id == R.id.aboutDev) {
+                    admobHelper.showInterstitialAd();
+                    getAlertAboutDeveloper();
+                } else if (id == R.id.shareApp) {
+                    admobHelper.showInterstitialAd();
+                    shareApp();
+                } else if (id == R.id.moreApp) {
+                    admobHelper.showInterstitialAd();
+                    moreApp();
+                }
+                binding.drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
         binding.navigationView.inflateMenu(R.menu.activity_main_drawer);
 
     }
@@ -174,29 +195,6 @@ public class ApplicationActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.aboutApp) {
-            admobHelper.showInterstitialAd();
-            getAlertAboutApp();
-        } else if (id == R.id.aboutDev) {
-            admobHelper.showInterstitialAd();
-            getAlertAboutDeveloper();
-        } else if (id == R.id.shareApp) {
-            admobHelper.showInterstitialAd();
-            shareApp();
-        } else if (id == R.id.moreApp) {
-            admobHelper.showInterstitialAd();
-            moreApp();
-        }
-        binding.drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
     }
 
 
